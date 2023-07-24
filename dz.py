@@ -1,6 +1,8 @@
 import os
-import json
-import csv
+# import json
+# import csv
+from mod_csvconvert import csv_process
+from mod_jsonconvert import json_process
 import pickle
 import sys
 sys.setrecursionlimit(10000)
@@ -28,22 +30,25 @@ def revercats(direct, dpath = ""):
                 # recurs(path, dpath)
                 # print(f'{path[path.index(direct)]} - дочерняя папки {path[path.index(direct)-1]}, размер папки = {disize(dpath)} байт.')
                 momsi = str(disize(dpath)) + " bytes"
-                json.dump([{"Parent directory": path[path.index(direct)-1], path[path.index(direct)]: momsi}], json_rec, indent= 2)
-                # json.dump(momsi, json_rec, 2)
+                json_process("Parent directory", path[path.index(direct)-1])
+                json_process(path[path.index(direct)], momsi)
+                csv_process("Parent directory", path[path.index(direct)-1])
+                csv_process(path[path.index(direct)], momsi)
+                # json.dump([{"Parent directory": path[path.index(direct)-1], path[path.index(direct)]: momsi}], json_rec, indent= 2)
                 for get in os.listdir(dpath):
                     if os.path.isfile(get):
                         filesi = str(os.path.getsize(get)) + ' bytes'
                         # print(f'{get} - файл, размер = {get.stat().st_size} байт.')
-                        json.dump([{get: filesi}], json_rec, indent= 2)
+                        # json.dump([{get: filesi}], json_rec, indent= 2)
+                        json_process(get, filesi)
+                        csv_process(get, filesi)
                     elif os.path.isdir(get):
                         # print(f'{get} - папка, размер = {disize(get)} байт.')
                         dicsi = str(disize(get)) + " bytes"
-                        json.dump([{get: dicsi}], json_rec, indent= 2)
-            readjson = json.load(json_rec)
+                        # json.dump([{get: dicsi}], json_rec, indent= 2)
+                        json_process(get, dicsi)
+                        csv_process(get, dicsi)
         json_rec.close()
-        with open ("datarecord.csv", 'w', encoding= 'utf-8') as csv_rec:
-            for line in readjson:
-                csv_rec.writerow(line)
 
 
 direct = input("2. Введите название желаемой конечной директории\n: ")
