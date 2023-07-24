@@ -3,10 +3,6 @@ from mod_convert import conveyor
 import sys
 sys.setrecursionlimit(10000)
 
-
-def recurs(pathcat, dpath):
-    return recurs(pathcat, dpath = dpath + pathcat + '\\')
-
 def recycle(direct, dpath = ""):
     path = os.path.abspath(direct).split('\\')
     for d in range(len(path)-1):
@@ -23,22 +19,20 @@ def disize(cat, score = 0):
             score += disize(get)
     return score
 
-def revercats(direct, dpath = ""):
+def revercats(direct, dpath = "", d = 0):
     path = os.path.abspath(direct).split('\\')
-    for d in range(len(path)-1):
-        # recurs(path[d], dpath)
-        dpath = dpath + path[d] + '\\'
-        if d >= path.index(direct):
-            momsi = str(disize(dpath)) + " bytes"
-            conveyor("Parent directory", path[path.index(direct)-1])
-            conveyor(path[path.index(direct)], momsi)
-            for get in os.listdir(dpath):
-                if os.path.isfile(get):
-                    filesi = 'file' + str(os.path.getsize(get)) + ' bytes'
-                    conveyor(get, filesi)
-                elif os.path.isdir(get):
-                    dicsi = 'directory' + str(disize(get)) + " bytes"
-                    conveyor(get, dicsi)
+    if d >= path.index(direct):
+        momsi = str(disize(dpath)) + " bytes"
+        conveyor("Parent directory", path[path.index(direct)-1])
+        conveyor(path[path.index(direct)], momsi)
+        for get in os.listdir(dpath):
+            if os.path.isfile(get):
+                filesi = 'file' + str(os.path.getsize(get)) + ' bytes'
+                conveyor(get, filesi)
+            elif os.path.isdir(get):
+                dicsi = 'directory' + str(disize(get)) + " bytes"
+                conveyor(get, dicsi)
+    return revercats(direct, dpath + path[d] + '\\', d + 1)
 
 direct = input("2. Введите название желаемой конечной директории\n: ")
 recycle(direct)
