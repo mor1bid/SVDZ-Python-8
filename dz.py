@@ -25,7 +25,6 @@ def disize(cat, score = 0):
 
 def revercats(direct, dpath = ""):
     path = os.path.abspath(direct).split('\\')
-    dpath = dpath + path[0] + '\\'
     for d in range(len(path)-1):
         # recurs(path[d], dpath)
         dpath = dpath + path[d] + '\\'
